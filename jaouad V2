@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صرخات الروح في صمت - Writing Space</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0d10;
+            color: #d1d5db;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: direction 0.3s;
+        }
+
+        body.en {
+            direction: ltr;
+            font-family: 'Georgia', serif;
+        }
+
+        body.fr {
+            direction: ltr;
+            font-family: 'Georgia', serif;
+        }
+
+        body.ar {
+            direction: rtl;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .writing-container {
+            width: 100%;
+            background-color: #12151c;
+            border: 1px solid #1f2430;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 1px solid #1f2430;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .novel-title {
+            color: #f3f4f6;
+            font-size: 2rem;
+            margin: 0 0 8px 0;
+            letter-spacing: 1px;
+        }
+
+        .novel-author {
+            color: #9ca3af;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: #0f1218;
+            border: 1px solid #222836;
+            border-radius: 8px;
+            color: #f9fafb;
+            font-size: 1.3rem;
+            line-height: 2.3;
+            padding: 20px;
+            resize: vertical;
+            outline: none;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            transition: border-color 0.3s;
+        }
+
+        body.en textarea,
+        body.fr textarea {
+            font-family: 'Georgia', serif;
+        }
+
+        textarea:focus {
+            border-color: #4b5563;
+        }
+
+        textarea::placeholder {
+            color: #4b5563;
+            font-style: italic;
+        }
+
+        .footer-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            color: #9ca3af;
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn {
+            background-color: #1f2430;
+            color: #e5e7eb;
+            border: 1px solid #374151;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        body.en .btn,
+        body.fr .btn {
+            font-family: 'Georgia', serif;
+        }
+
+        .btn:hover {
+            background-color: #374151;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #save-status {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .language-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #1f2430;
+            border: 1px solid #374151;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            font-size: 1.5rem;
+            color: #e5e7eb;
+            z-index: 100;
+        }
+
+        .language-toggle:hover {
+            background-color: #374151;
+            transform: scale(1.1);
+        }
+
+        .language-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            background-color: #1f2430;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            min-width: 120px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+            z-index: 99;
+        }
+
+        .language-menu.active {
+            display: flex;
+        }
+
+        .lang-option {
+            background-color: #12151c;
+            color: #e5e7eb;
+            border: 1px solid #374151;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+            font-size: 0.95rem;
+            font-family: 'Georgia', serif;
+        }
+
+        .lang-option:hover {
+            background-color: #374151;
+        }
+
+        .lang-option.active {
+            background-color: #374151;
+            border-color: #6b7280;
+        }
+
+        /* ===== VERSION HISTORY PANEL ===== */
+        .version-history-btn {
+            position: fixed;
+            bottom: 100px;
+            left: 30px;
+            background-color: #1f2430;
+            border: 1px solid #374151;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            font-size: 1.3rem;
+            color: #e5e7eb;
+            z-index: 100;
+        }
+
+        .version-history-btn:hover {
+            background-color: #374151;
+            transform: scale(1.1);
+        }
+
+        .version-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 320px;
+            max-height: 500px;
+            background-color: #12151c;
+            border: 1px solid #1f2430;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+            z-index: 99;
+            overflow: hidden;
+        }
+
+        .version-panel.active {
+            display: flex;
+        }
+
+        .version-panel-header {
+            padding: 15px;
+            border-bottom: 1px solid #1f2430;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .version-panel-title {
+            color: #f3f4f6;
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .version-panel-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+        }
+
+        .version-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .version-item {
+            background-color: #0f1218;
+            border: 1px solid #222836;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .version-item:hover {
+            background-color: #1a1f28;
+            border-color: #374151;
+        }
+
+        .version-item.active {
+            background-color: #1f2430;
+            border-color: #4b5563;
+        }
+
+        .version-time {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .version-preview {
+            color: #d1d5db;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .version-stats {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .version-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .version-btn {
+            flex: 1;
+            background-color: #1f2430;
+            border: 1px solid #374151;
+            color: #e5e7eb;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.2s;
+            font-family: 'Georgia', serif;
+        }
+
+        .version-btn:hover {
+            background-color: #374151;
+        }
+
+        .version-btn.delete {
+            background-color: #7f1d1d;
+            border-color: #991b1b;
+        }
+
+        .version-btn.delete:hover {
+            background-color: #991b1b;
+        }
+
+        #pdf-content {
+            display: none;
+            background: white;
+            color: black;
+            padding: 40px;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+        }
+
+        #pdf-content.en {
+            font-family: 'Georgia', serif;
+            direction: ltr;
+        }
+
+        #pdf-content.fr {
+            font-family: 'Georgia', serif;
+            direction: ltr;
+        }
+
+        #pdf-content.ar {
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            direction: rtl;
+        }
+
+        #pdf-content .pdf-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        #pdf-content .pdf-title {
+            font-size: 28px;
+            margin: 0 0 10px 0;
+            color: #000;
+        }
+
+        #pdf-content .pdf-author {
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+        }
+
+        #pdf-content .pdf-text {
+            font-size: 16px;
+            line-height: 2;
+            text-align: justify;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Scrollbar styling */
+        .version-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .version-list::-webkit-scrollbar-track {
+            background: #0f1218;
+        }
+
+        .version-list::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+
+        .version-list::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+
+        @media (max-width: 768px) {
+            .version-panel {
+                width: 280px;
+            }
+
+            .language-toggle,
+            .version-history-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body class="ar">
+
+    <div class="main-wrapper">
+        <div class="writing-container">
+            <div class="header">
+                <h1 class="novel-title" id="novel-title">صرخات الروح في صمت</h1>
+                <p class="novel-author" id="novel-author">قلم: جواد سلامي</p>
+            </div>
+
+            <textarea id="novel-text" placeholder="اكتب فصلاً جديداً هنا..."></textarea>
+
+            <div class="footer-tools">
+                <div>
+                    <span id="word-label">عدد الكلمات:</span> <span id="word-count">0</span> |
+                    <span id="char-label">عدد الحروف:</span> <span id="char-count">0</span>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn" onclick="saveText()" id="save-txt-btn">حفظ كملف نصي</button>
+                    <button class="btn" onclick="savePDF()" id="save-pdf-btn">حفظ كـ PDF</button>
+                </div>
+
+                <div>
+                    <span id="save-status">تم الحفظ تلقائياً</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Panel -->
+    <button class="version-history-btn" id="version-history-btn" title="سجل الإصدارات">
+        <i class="fas fa-history"></i>
+    </button>
+
+    <div class="version-panel" id="version-panel">
+        <div class="version-panel-header">
+            <p class="version-panel-title" id="version-title">سجل الإصدارات</p>
+            <button class="version-panel-close" onclick="toggleVersionPanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="version-list" id="version-list"></div>
+    </div>
+
+    <!-- Language Menu -->
+    <div class="language-menu" id="language-menu">
+        <div class="lang-option active" data-lang="ar">العربية</div>
+        <div class="lang-option" data-lang="en">English</div>
+        <div class="lang-option" data-lang="fr">Français</div>
+    </div>
+
+    <!-- Language Toggle -->
+    <div class="language-toggle" id="language-toggle">
+        <i class="fas fa-globe"></i>
+    </div>
+
+    <div id="pdf-content" class="ar">
+        <div class="pdf-header">
+            <h1 class="pdf-title" id="pdf-title">صرخات الروح في صمت</h1>
+            <p class="pdf-author" id="pdf-author">قلم: جواد سلامي</p>
+        </div>
+        <div class="pdf-text" id="pdf-text-content"></div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('novel-text');
+        const wordCountDisplay = document.getElementById('word-count');
+        const charCountDisplay = document.getElementById('char-count');
+        const saveStatus = document.getElementById('save-status');
+        const languageToggle = document.getElementById('language-toggle');
+        const languageMenu = document.getElementById('language-menu');
+        const langOptions = document.querySelectorAll('.lang-option');
+        const versionHistoryBtn = document.getElementById('version-history-btn');
+        const versionPanel = document.getElementById('version-panel');
+        const versionList = document.getElementById('version-list');
+
+        let currentLanguage = localStorage.getItem('language') || 'ar';
+        let versions = JSON.parse(localStorage.getItem('versions')) || [];
+        let currentVersionId = null;
+
+        const translations = {
+            ar: {
+                title: 'صرخات الروح في صمت',
+                author: 'قلم: جواد سلامي',
+                placeholder: 'اكتب فصلاً جديداً هنا...',
+                wordLabel: 'عدد الكلمات:',
+                charLabel: 'عدد الحروف:',
+                saveTxt: 'حفظ كملف نصي',
+                savePdf: 'حفظ كـ PDF',
+                savedAuto: 'تم الحفظ تلقائياً',
+                saving: 'جاري الحفظ...',
+                fileDownloaded: 'تم تنزيل الملف!',
+                generatingPdf: 'جاري إنشاء ملف PDF...',
+                pdfDownloaded: 'تم تنزيل ملف PDF!',
+                errorPdf: 'خطأ في إنشاء PDF',
+                filename: 'مسودة',
+                versionTitle: 'سجل الإصدارات',
+                restore: 'استرجاع',
+                delete: 'حذف',
+                words: 'كلمات',
+                chars: 'حروف',
+                noVersions: 'لا توجد نسخ محفوظة',
+                confirmDelete: 'هل تريد حذف هذه النسخة؟'
+            },
+            en: {
+                title: 'Screams of the Soul in Silence',
+                author: 'By: Jawad Salami',
+                placeholder: 'Write a new chapter here...',
+                wordLabel: 'Words:',
+                charLabel: 'Characters:',
+                saveTxt: 'Save as TXT',
+                savePdf: 'Save as PDF',
+                savedAuto: 'Saved automatically',
+                saving: 'Saving...',
+                fileDownloaded: 'File downloaded!',
+                generatingPdf: 'Generating PDF...',
+                pdfDownloaded: 'PDF downloaded!',
+                errorPdf: 'Error generating PDF',
+                filename: 'draft',
+                versionTitle: 'Version History',
+                restore: 'Restore',
+                delete: 'Delete',
+                words: 'words',
+                chars: 'chars',
+                noVersions: 'No versions saved',
+                confirmDelete: 'Delete this version?'
+            },
+            fr: {
+                title: 'Les cris de l\'âme dans le silence',
+                author: 'Par: Jawad Salami',
+                placeholder: 'Écrivez un nouveau chapitre ici...',
+                wordLabel: 'Mots:',
+                charLabel: 'Caractères:',
+                saveTxt: 'Enregistrer en TXT',
+                savePdf: 'Enregistrer en PDF',
+                savedAuto: 'Enregistré automatiquement',
+                saving: 'Enregistrement...',
+                fileDownloaded: 'Fichier téléchargé!',
+                generatingPdf: 'Génération du PDF...',
+                pdfDownloaded: 'PDF téléchargé!',
+                errorPdf: 'Erreur lors de la génération du PDF',
+                filename: 'brouillon',
+                versionTitle: 'Historique des versions',
+                restore: 'Restaurer',
+                delete: 'Supprimer',
+                words: 'mots',
+                chars: 'caractères',
+                noVersions: 'Aucune version enregistrée',
+                confirmDelete: 'Supprimer cette version?'
+            }
+        };
+
+        // ===== VERSION HISTORY FEATURE =====
+        function saveVersion() {
+            const text = textarea.value;
+            const wordCount = text.trim() === '' ? 0 : text.split(/\s+/).length;
+            
+            const version = {
+                id: Date.now(),
+                timestamp: new Date(),
+                content: text,
+                wordCount: wordCount,
+                characterCount: text.length
+            };
+
+            versions.unshift(version);
+            
+            if (versions.length > 20) {
+                versions.pop();
+            }
+
+            localStorage.setItem('versions', JSON.stringify(versions));
+            renderVersionHistory();
+        }
+
+        function renderVersionHistory() {
+            versionList.innerHTML = '';
+            
+            if (versions.length === 0) {
+                const t = translations[currentLanguage];
+                versionList.innerHTML = `<div style="color: #6b7280; text-align: center; padding: 20px;">${t.noVersions}</div>`;
+                return;
+            }
+
+            const t = translations[currentLanguage];
+
+            versions.forEach((version, index) => {
+                const date = new Date(version.timestamp);
+                const timeStr = date.toLocaleString(currentLanguage === 'ar' ? 'ar-SA' : currentLanguage === 'fr' ? 'fr-FR' : 'en-US');
+                const preview = version.content.substring(0, 80).replace(/\n/g, ' ');
+
+                const versionEl = document.createElement('div');
+                versionEl.className = 'version-item' + (currentVersionId === version.id ? ' active' : '');
+                versionEl.innerHTML = `
+                    <div class="version-time">${timeStr}</div>
+                    <div class="version-preview">${preview}${version.content.length > 80 ? '...' : ''}</div>
+                    <div class="version-stats">
+                        <span>${version.wordCount} ${t.words}</span>
+                        <span>${version.characterCount} ${t.chars}</span>
+                    </div>
+                    <div class="version-actions">
+                        <button class="version-btn" onclick="restoreVersion(${version.id})" title="${t.restore}">${t.restore}</button>
+                        <button class="version-btn delete" onclick="deleteVersion(${version.id})" title="${t.delete}">${t.delete}</button>
+                    </div>
+                `;
+                versionList.appendChild(versionEl);
+            });
+        }
+
+        function restoreVersion(versionId) {
+            const version = versions.find(v => v.id === versionId);
+            if (version) {
+                textarea.value = version.content;
+                currentVersionId = versionId;
+                updateStats();
+                saveVersion();
+                renderVersionHistory();
+                const t = translations[currentLanguage];
+                saveStatus.textContent = currentLanguage === 'ar' ? 'تم استرجاع النسخة' : currentLanguage === 'fr' ? 'Version restaurée' : 'Version restored';
+                setTimeout(() => {
+                    saveStatus.textContent = t.savedAuto;
+                }, 2000);
+            }
+        }
+
+        function deleteVersion(versionId) {
+            const t = translations[currentLanguage];
+            if (confirm(t.confirmDelete)) {
+                versions = versions.filter(v => v.id !== versionId);
+                localStorage.setItem('versions', JSON.stringify(versions));
+                if (currentVersionId === versionId) {
+                    currentVersionId = null;
+                }
+                renderVersionHistory();
+            }
+        }
+
+        function toggleVersionPanel() {
+            versionPanel.classList.toggle('active');
+        }
+
+        versionHistoryBtn.addEventListener('click', toggleVersionPanel);
+
+        // ===== LANGUAGE FUNCTIONS =====
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+
+            const body = document.body;
+            const pdfContent = document.getElementById('pdf-content');
+            const htmlElement = document.documentElement;
+
+            body.className = lang;
+            pdfContent.className = lang;
+            htmlElement.lang = lang;
+            htmlElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            const t = translations[lang];
+
+            // Update all text content
+            document.getElementById('novel-title').textContent = t.title;
+            document.getElementById('novel-author').textContent = t.author;
+            document.getElementById('pdf-title').textContent = t.title;
+            document.getElementById('pdf-author').textContent = t.author;
+
+            document.getElementById('novel-text').placeholder = t.placeholder;
+            document.getElementById('word-label').textContent = t.wordLabel;
+            document.getElementById('char-label').textContent = t.charLabel;
+            document.getElementById('save-txt-btn').textContent = t.saveTxt;
+            document.getElementById('save-pdf-btn').textContent = t.savePdf;
+            document.getElementById('save-status').textContent = t.savedAuto;
+            document.getElementById('version-title').textContent = t.versionTitle;
+            document.getElementById('version-history-btn').title = t.versionTitle;
+
+            updateLangMenuState();
+            renderVersionHistory();
+            closeLanguageMenu();
+        }
+
+        function updateLangMenuState() {
+            langOptions.forEach(option => {
+                if (option.getAttribute('data-lang') === currentLanguage) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+
+        function toggleLanguageMenu() {
+            languageMenu.classList.toggle('active');
+        }
+
+        function closeLanguageMenu() {
+            languageMenu.classList.remove('active');
+        }
+
+        languageToggle.addEventListener('click', toggleLanguageMenu);
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+                setLanguage(lang);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.language-toggle') && !e.target.closest('.language-menu')) {
+                closeLanguageMenu();
+            }
+            if (!e.target.closest('.version-history-btn') && !e.target.closest('.version-panel')) {
+                versionPanel.classList.remove('active');
+            }
+        });
+
+        // ===== INITIALIZATION =====
+        if (localStorage.getItem('novel_draft')) {
+            textarea.value = localStorage.getItem('novel_draft');
+            updateStats();
+        }
+
+        setLanguage(currentLanguage);
+        renderVersionHistory();
+
+        // ===== AUTO-SAVE & STATS =====
+        function updateStats() {
+            const text = textarea.value.trim();
+            const words = text === '' ? 0 : text.split(/\s+/).length;
+            const chars = text.length;
+
+            wordCountDisplay.textContent = words;
+            charCountDisplay.textContent = chars;
+        }
+
+        let autoSaveTimeout;
+        textarea.addEventListener('input', () => {
+            updateStats();
+            localStorage.setItem('novel_draft', textarea.value);
+            const t = translations[currentLanguage];
+            saveStatus.textContent = t.saving;
+
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                saveVersion();
+                saveStatus.textContent = t.savedAuto;
+            }, 3000);
+        });
+
+        function saveText() {
+            const t = translations[currentLanguage];
+            const blob = new Blob([textarea.value], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${t.filename}.txt`;
+            link.click();
+
+            saveStatus.textContent = t.fileDownloaded;
+            setTimeout(() => {
+                saveStatus.textContent = t.savedAuto;
+            }, 2000);
+        }
+
+        function savePDF() {
+            const t = translations[currentLanguage];
+            saveStatus.textContent = t.generatingPdf;
+
+            document.getElementById('pdf-text-content').textContent = textarea.value;
+
+            const element = document.getElementById('pdf-content');
+
+            const options = {
+                margin: 10,
+                filename: `${t.filename}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            html2pdf()
+                .set(options)
+                .from(element)
+                .save()
+                .then(() => {
+                    saveStatus.textContent = t.pdfDownloaded;
+                    setTimeout(() => {
+                        saveStatus.textContent = t.savedAuto;
+                    }, 2000);
+                })
+                .catch(() => {
+                    saveStatus.textContent = t.errorPdf;
+                    setTimeout(() => {
+                        saveStatus.textContent = t.savedAuto;
+                    }, 2000);
+                });
+        }
+
+        updateStats();
+    </script>
+
+</body>
+</html>
